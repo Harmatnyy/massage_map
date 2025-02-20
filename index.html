@@ -147,7 +147,13 @@
       background: #555;
       border: 2px solid #555;
     }
-
+    
+.toggle-list-btn {
+  position: absolute;
+  bottom: 10px; /* відступ знизу */
+  left: 10px;   /* відступ зліва */
+  z-index: 9999; /* щоб не перекривалася елементами карти */
+}
     /* Стилі попап-контенту */
     .leaflet-popup-content h4 {
       margin-top: 0;
@@ -180,6 +186,13 @@
   <!-- Мапа -->
   <div id="map"></div>
 
+<!-- Кнопка (з іконкою "expand/compress") у лівому нижньому куті -->
+<div class="toggle-list-btn">
+  <button class="btn btn-dark" id="toggleListBtn">
+    <i class="fa fa-expand" id="toggleListBtnIcon"></i>
+  </button>
+</div>
+  
   <!-- Контейнер Masonry -->
   <div class="container">
     <div class="grid" id="cards-container">
@@ -238,6 +251,43 @@
     document.getElementById("toggleThemeBtn")
       .addEventListener("click", toggleTheme);
 
+
+    var isListHidden = false; // початково список показано
+
+document.getElementById('toggleListBtn').addEventListener('click', function() {
+  var listContainer = document.querySelector('.container'); // блок з картками
+  var mapElement = document.getElementById('map');
+  var iconEl = document.getElementById('toggleListBtnIcon');
+
+  if (!isListHidden) {
+    // Приховуємо список
+    listContainer.style.display = 'none';
+
+    // Розгортаємо карту на всю висоту
+    mapElement.style.height = '100vh';
+    map.invalidateSize(); // перерахувати розмір Leaflet
+
+    // Міняємо іконку "expand" → "compress"
+    iconEl.classList.remove('fa-expand');
+    iconEl.classList.add('fa-compress');
+
+    isListHidden = true;
+  } else {
+    // Показуємо список
+    listContainer.style.display = 'block';
+
+    // Повертаємо мапу до 60vh (як було)
+    mapElement.style.height = '60vh';
+    map.invalidateSize();
+
+    // Міняємо іконку "compress" → "expand"
+    iconEl.classList.remove('fa-compress');
+    iconEl.classList.add('fa-expand');
+
+    isListHidden = false;
+  }
+});
+    
     // ---------- Дані -----------
     var places = [
       {
