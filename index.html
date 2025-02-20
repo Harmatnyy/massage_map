@@ -184,14 +184,21 @@
   </div>
 
   <!-- Мапа -->
-  <div id="map"></div>
+  <div id="map">
+     <!-- ... код для відображення мапи ... -->
 
-<!-- Кнопка (з іконкою "expand/compress") у лівому нижньому куті -->
-<div class="toggle-list-btn">
-  <button class="btn btn-dark" id="toggleListBtn">
+  <!-- Кнопка в лівому нижньому куті мапи -->
+  <button class="btn btn-dark" id="toggleListBtn" style="
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 9999;
+  ">
     <i class="fa fa-expand" id="toggleListBtnIcon"></i>
   </button>
-</div>
+  </div>
+
+
   
   <!-- Контейнер Masonry -->
   <div class="container">
