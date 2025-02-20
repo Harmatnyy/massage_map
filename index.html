@@ -2,20 +2,16 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <title>Massage Map: Day/Night Theme + Masonry</title>
+  <title>Massage Map (without route & card->marker hover)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Bootstrap CSS (v3) -->
+  <!-- Bootstrap 5 CSS -->
   <link
     rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
-  />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
   />
 
-  <!-- Font Awesome -->
+  <!-- Font Awesome (для іконок) -->
   <link
     rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -43,18 +39,10 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"
   />
 
-  <style>
-    /* Збільшуємо розмір тексту в абзацах попапу */
-.leaflet-popup-content p {
-  font-size: 16px; /* оберіть бажаний розмір */
-  line-height: 1.4; /* трішки збільшимо міжрядковий інтервал, за потреби */
-}
+  <!-- Masonry (немає окремого CSS, лише скрипт) -->
 
-/* Робимо текст у кнопці білим */
-.leaflet-popup-content a.btn {
-  color: #fff !important;  /* важливо перебити базовий колір Bootstrap */
-}
-    /* Скидання відступів */
+  <style>
+    /* Скидаємо відступи */
     html, body {
       margin: 0;
       padding: 0;
@@ -62,13 +50,20 @@
       height: 100%;
     }
 
-    /* Карта (60% висоти екрану) */
+    /* Карта (60% висоти вікна) */
     #map {
       width: 100%;
       height: 60vh;
       position: relative;
     }
+    .leaflet-popup-content a.btn {
+  color: #fff !important; /* робить сам текст кнопки білим */
+}
 
+/* Якщо у вас є іконка всередині кнопки (напр. <i class="fa ..."></i>), додайте: */
+.leaflet-popup-content a.btn i {
+  color: #fff !important; /* щоб і іконка також була білою */
+}
     /* Кнопка перемикання теми */
     .theme-toggle-btn {
       position: absolute;
@@ -77,7 +72,7 @@
       z-index: 9999;
     }
 
-    /* Контейнер для Masonry-карток */
+    /* Контейнер Masonry */
     .container {
       margin-top: 20px;
     }
@@ -91,33 +86,47 @@
       display: inline-block;
       vertical-align: top;
     }
-    .panel {
+
+    /* Bootstrap 5 Cards замість панелей */
+    .card {
       border: 1px solid #ddd;
       border-radius: 4px;
+      transition: all 0.2s ease;
     }
-    .panel-body {
-      padding: 15px;
+    .card-body {
+      padding: 1rem;
     }
+    /* Hover-ефект для самих карток (тінь/зсув) */
     .grid-item:hover {
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       transform: translateY(-2px);
-      transition: all 0.2s ease;
       cursor: pointer;
     }
 
-    /* Тема світла (за замовчуванням) */
+    /* ------------------ Теми ------------------ */
+    /* Тема світла */
     body.light-theme {
       background-color: #ffffff;
       color: #333;
     }
+    body.light-theme .card {
+      background-color: #fff;
+      color: #333;
+      border-color: #ddd;
+    }
+
     /* Тема темна */
     body.dark-theme {
       background-color: #1c1c1c;
       color: #ccc;
     }
-    
+    body.dark-theme .card {
+      background-color: #2a2a2a;
+      color: #ccc;
+      border-color: #555;
+    }
 
-    /* Світла тема для попапу Leaflet */
+    /* Попапи для світлої теми */
     body.light-theme .leaflet-popup-content-wrapper {
       background: #fff;
       color: #333;
@@ -128,7 +137,7 @@
       border: 2px solid #eee;
     }
 
-    /* Темна тема для попапу Leaflet */
+    /* Попапи для темної теми */
     body.dark-theme .leaflet-popup-content-wrapper {
       background: #2a2a2a;
       color: #ccc;
@@ -139,7 +148,7 @@
       border: 2px solid #555;
     }
 
-    /* Стилі тексту всередині попапа */
+    /* Стилі попап-контенту */
     .leaflet-popup-content h4 {
       margin-top: 0;
       margin-bottom: 10px;
@@ -152,44 +161,26 @@
     .leaflet-popup-content strong {
       font-weight: 600;
     }
-    /* ТЕМНА ТЕМА з чорним текстом */
-body.dark-theme {
-  /* Фон - будь-який; якщо фон теж темний, чорний текст може бути непомітним */
-  background-color: #1c1c1c;
-  color: #000 !important; /* зробити текст чорним */
-}
 
-/* Якщо у вас картки (panel), попапи Leaflet тощо, теж форсуємо колір */
-body.dark-theme .panel-body,
-body.dark-theme .leaflet-popup-content,
-body.dark-theme .leaflet-popup-content-wrapper {
-  color: #000 !important;
-}
-
-/* Якщо попап має темний фон, треба змінити й фон, щоби чорний текст був видимий */
-body.dark-theme .leaflet-popup-content-wrapper {
-  background-color: #fff;  /* або інший світлий фон */
-  border: 2px solid #ccc;  /* межа під колір */
-}
-body.dark-theme .leaflet-popup-tip {
-  background-color: #ccc;
-  border: 2px solid #ccc;
-}
+    /* Підсвічування картки при наведенні на маркер */
+    .highlight-card {
+      outline: 2px solid #00f; /* синя рамка навколо картки */
+    }
   </style>
 </head>
-<body class="light-theme">
+<body>
 
   <!-- Кнопка перемикання теми -->
   <div class="theme-toggle-btn">
-    <button class="btn btn-default" id="toggleThemeBtn">
-      <i class="fa fa-adjust"></i> Перемкнути тему
+    <button class="btn btn-secondary" id="toggleThemeBtn">
+      <i class="fa fa-adjust"></i> Тема
     </button>
   </div>
 
-  <!-- Карта -->
+  <!-- Мапа -->
   <div id="map"></div>
 
-  <!-- Masonry-контейнер для карток -->
+  <!-- Контейнер Masonry -->
   <div class="container">
     <div class="grid" id="cards-container">
       <!-- картки генеруються JS -->
@@ -197,17 +188,48 @@ body.dark-theme .leaflet-popup-tip {
   </div>
 
   <!-- JS бібліотеки -->
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+
+  <!-- Masonry -->
   <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
-  <!-- imagesLoaded (для зображень, якщо треба) -->
-  <!-- <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script> -->
 
   <script>
-    // Дані масажистів
+    // ---------- Збереження теми (LocalStorage) ----------
+    var savedTheme = localStorage.getItem("selectedTheme");
+    if (savedTheme) {
+      document.body.classList.add(savedTheme);
+    } else {
+      document.body.classList.add("light-theme");
+    }
+
+    function toggleTheme() {
+      var body = document.body;
+      if (body.classList.contains("light-theme")) {
+        body.classList.remove("light-theme");
+        body.classList.add("dark-theme");
+        localStorage.setItem("selectedTheme", "dark-theme");
+
+        // Змінюємо шар
+        if (map.hasLayer(dayLayer)) map.removeLayer(dayLayer);
+        if (!map.hasLayer(nightLayer)) map.addLayer(nightLayer);
+      } else {
+        body.classList.remove("dark-theme");
+        body.classList.add("light-theme");
+        localStorage.setItem("selectedTheme", "light-theme");
+
+        // Змінюємо шар
+        if (map.hasLayer(nightLayer)) map.removeLayer(nightLayer);
+        if (!map.hasLayer(dayLayer)) map.addLayer(dayLayer);
+      }
+    }
+
+    document.getElementById("toggleThemeBtn")
+      .addEventListener("click", toggleTheme);
+
+    // ---------- Дані -----------
     var places = [
       {
         name: "Женя массажист",
@@ -295,39 +317,44 @@ body.dark-theme .leaflet-popup-tip {
       }
     ];
 
-    // Ініціалізація мапи
-    var map = L.map('map').setView([50.4501, 30.5234], 12);
+    // ---------- Ініціалізація мапи ----------
+    var map = L.map('map', {
+      center: [50.4501, 30.5234],
+      zoom: 12
+    });
 
     // Денний шар (Google) - неофіційний
     var dayLayer = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains:['mt0','mt1','mt2','mt3']
-    }).addTo(map);
-
+    });
     // Нічний шар (Carto DarkMatter)
     var nightLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+      maxZoom: 19
     });
 
-    // Створюємо MarkerClusterGroup
+    // Встановлюємо шар залежно від теми
+    if (document.body.classList.contains("dark-theme")) {
+      nightLayer.addTo(map);
+    } else {
+      dayLayer.addTo(map);
+    }
+
+    // Кластер
     var markerCluster = L.markerClusterGroup();
 
-    // Функція для іконок (залежно від типу контакту)
-    function getIconByType(type) {
+    // Функція для створення іконок
+    function getIcon(type, highlighted) {
       var iconName, markerColor;
-      switch(type) {
-        case 'phone':
-          iconName = 'fa-phone';
-          markerColor = 'blue';
-          break;
-        case 'link':
-          iconName = 'fa-link';
-          markerColor = 'green';
-          break;
-        default:
-          iconName = 'fa-map-marker';
-          markerColor = 'red';
+      if (type === 'phone') {
+        iconName = 'fa-phone';
+        markerColor = highlighted ? 'darkblue' : 'blue';
+      } else if (type === 'link') {
+        iconName = 'fa-link';
+        markerColor = highlighted ? 'darkgreen' : 'green';
+      } else {
+        iconName = 'fa-map-marker';
+        markerColor = highlighted ? 'darkred' : 'red';
       }
       return L.AwesomeMarkers.icon({
         icon: iconName,
@@ -337,7 +364,7 @@ body.dark-theme .leaflet-popup-tip {
       });
     }
 
-    // Формування попапу
+    // Створення попапу (без кнопки "Маршрут")
     function buildPopup(place) {
       var content = "<h4>" + place.name + "</h4>";
       if (place.address) {
@@ -349,6 +376,7 @@ body.dark-theme .leaflet-popup-tip {
       if (place.desc) {
         content += "<p><strong>Опис:</strong> " + place.desc + "</p>";
       }
+      // Кнопка "Дзвінок" / "Записатися"
       if (place.contact_type === "phone") {
         content += "<p><a href='tel:" + place.contact_value
                  + "' class='btn btn-primary'><i class='fa fa-phone'></i> Дзвінок</a></p>";
@@ -359,32 +387,36 @@ body.dark-theme .leaflet-popup-tip {
       return content;
     }
 
-    // Зв'язок place+marker
     var placeMarkers = [];
 
-    // Додаємо маркери
-    places.forEach(function(p) {
-      var marker = L.marker([p.lat, p.lon], {
-        icon: getIconByType(p.contact_type)
-      }).bindPopup(buildPopup(p), { maxWidth: 280 });
+    places.forEach(function(place, idx) {
+      var marker = L.marker([place.lat, place.lon], {
+        icon: getIcon(place.contact_type, false)
+      }).bindPopup(buildPopup(place), { maxWidth: 300 });
 
       markerCluster.addLayer(marker);
-      placeMarkers.push({ place: p, marker: marker });
+
+      // Збережемо посилання (щоб підсвічувати картку при hover на маркер)
+      placeMarkers.push({ place: place, marker: marker, cardDiv: null });
     });
 
     map.addLayer(markerCluster);
 
-    // ------------ MASONRY КАРТКИ ------------
-    var container = document.getElementById("cards-container");
+    // ---------- Masonry-картки ----------
+    var cardsContainer = document.getElementById("cards-container");
 
     places.forEach(function(place, idx) {
+      // .grid-item .card
       var itemDiv = document.createElement("div");
-      itemDiv.className = "grid-item panel panel-default";
+      itemDiv.className = "grid-item";
 
-      var panelBody = document.createElement("div");
-      panelBody.className = "panel-body";
+      var card = document.createElement("div");
+      card.className = "card";
 
-      var html = "<h4>" + place.name + "</h4>";
+      var cardBody = document.createElement("div");
+      cardBody.className = "card-body";
+
+      var html = "<h5>" + place.name + "</h5>";
       if (place.address) {
         html += "<p><strong>Адреса:</strong> " + place.address + "</p>";
       }
@@ -394,31 +426,35 @@ body.dark-theme .leaflet-popup-tip {
       if (place.desc) {
         html += "<p><strong>Опис:</strong> " + place.desc + "</p>";
       }
+      // Кнопки
       if (place.contact_type === "phone") {
         html += "<p><strong>Телефон:</strong> " + place.contact_value + "</p>";
-        html += "<p><a href='tel:" + place.contact_value
-               + "' class='btn btn-primary'><i class='fa fa-phone'></i> Дзвінок</a></p>";
+        html += "<a href='tel:" + place.contact_value
+               + "' class='btn btn-primary'><i class='fa fa-phone'></i> Дзвінок</a> ";
       } else if (place.contact_type === "link") {
-        html += "<p><a href='" + place.contact_value
-               + "' class='btn btn-success' target='_blank'><i class='fa fa-link'></i> Записатися</a></p>";
+        html += "<a href='" + place.contact_value
+               + "' class='btn btn-success' target='_blank'><i class='fa fa-link'></i> Записатися</a> ";
       }
 
-      panelBody.innerHTML = html;
-      itemDiv.appendChild(panelBody);
+      cardBody.innerHTML = html;
+      card.appendChild(cardBody);
+      itemDiv.appendChild(card);
+      cardsContainer.appendChild(itemDiv);
 
-      // Клік на картку → фокус на маркері
+      // Зберігаємо cardDiv (для highlight, якщо наведемо на маркер)
+      placeMarkers[idx].cardDiv = card;
+
+      // Клік на картку -> скрол до верху (плавно), фокус на маркері
       itemDiv.addEventListener("click", function() {
-      var marker = placeMarkers[idx].marker;
-      map.flyTo(marker.getLatLng(), 15);
-      marker.openPopup();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        var mk = placeMarkers[idx].marker;
+        map.flyTo(mk.getLatLng(), 15);
+        mk.openPopup();
+      });
 
-  // Прокручуємо сторінку до самого верху
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // або заберіть, якщо не потрібна плавна анімація
-  });
-});
-      container.appendChild(itemDiv);
+      // ------ ВИЛУЧЕНО hover "картка → маркер" ------
+      // itemDiv.addEventListener("mouseover", ...)  // Видалено
+      // itemDiv.addEventListener("mouseout", ...)   // Видалено
     });
 
     // Ініціалізація Masonry
@@ -430,29 +466,7 @@ body.dark-theme .leaflet-popup-tip {
       gutter: 15
     });
 
-    // ------------ ПЕРЕМИКАННЯ ТЕМИ ------------
-    function toggleTheme() {
-      var body = document.body;
-      if (body.classList.contains('light-theme')) {
-        // До темної
-        body.classList.remove('light-theme');
-        body.classList.add('dark-theme');
-        // Змінюємо шар
-        if (map.hasLayer(dayLayer)) map.removeLayer(dayLayer);
-        if (!map.hasLayer(nightLayer)) map.addLayer(nightLayer);
-      } else {
-        // До світлої
-        body.classList.remove('dark-theme');
-        body.classList.add('light-theme');
-        // Змінюємо шар
-        if (map.hasLayer(nightLayer)) map.removeLayer(nightLayer);
-        if (!map.hasLayer(dayLayer)) map.addLayer(dayLayer);
-      }
-    }
-
-    document.getElementById("toggleThemeBtn")
-      .addEventListener("click", toggleTheme);
-
+   
   </script>
 </body>
 </html>
