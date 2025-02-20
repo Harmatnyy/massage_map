@@ -197,6 +197,15 @@
   <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
 
   <script>
+      // Отримуємо поточну годину (0-23)
+  var hour = new Date().getHours();
+
+  // Якщо між 7 і 19 годинами — світла тема, інакше — темна
+  if (hour >= 7 && hour < 19) {
+    document.body.classList.add("light-theme");
+  } else {
+    document.body.classList.add("dark-theme");
+  }
     // ---------- Збереження теми (LocalStorage) ----------
     var savedTheme = localStorage.getItem("selectedTheme");
     if (savedTheme) {
