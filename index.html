@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_3a84e4abcdc0c09121ef559a9d29c79a {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_3a84e4abcdc0c09121ef559a9d29c79a" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_3a84e4abcdc0c09121ef559a9d29c79a = L.map(
+                "map_3a84e4abcdc0c09121ef559a9d29c79a",
+                {
+                    center: [50.4501, 30.5234],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_6f99d8612c40ef9d8909162abf2c2f25 = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_3a84e4abcdc0c09121ef559a9d29c79a);
+        
+    
+            var marker_cluster_c17f7e2a638832c1002df17362170818 = L.markerClusterGroup(
+                {}
+            );
+            map_3a84e4abcdc0c09121ef559a9d29c79a.addLayer(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var marker_f1411538a0bca9d29fb67ab4208a3dc6 = L.marker(
+                [50.425, 30.52],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_8296821649e6e6d1948fe4d4261c5102 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_f1411538a0bca9d29fb67ab4208a3dc6.setIcon(icon_8296821649e6e6d1948fe4d4261c5102);
+        
+    
+        var popup_7e954e141ff4444cc0bea5b9d8a414be = L.popup({"maxWidth": "100%"});
+
+        
+            var html_4ce03e53b03baa49efbb1a11129a10f3 = $(`<div id="html_4ce03e53b03baa49efbb1a11129a10f3" style="width: 100.0%; height: 100.0%;"><b>Женя массажист</b><br>📍 Палац Україна<br>💰 800-1000 грн за 2-3 години<br>💆‍♂️ Банки, стимуляції, розслабляючий, спортивний, лікуючий.<br>📞 0504400094</div>`)[0];
+            popup_7e954e141ff4444cc0bea5b9d8a414be.setContent(html_4ce03e53b03baa49efbb1a11129a10f3);
+        
+
+        marker_f1411538a0bca9d29fb67ab4208a3dc6.bindPopup(popup_7e954e141ff4444cc0bea5b9d8a414be)
+        ;
+
+        
+    
+    
+            marker_f1411538a0bca9d29fb67ab4208a3dc6.bindTooltip(
+                `<div>
+                     Женя массажист
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_69396fef3bb813b3f30fd6edcdb71e92 = L.marker(
+                [50.4406, 30.5472],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_e4d0306c7274d2fd3b19a6cd95f2040a = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_69396fef3bb813b3f30fd6edcdb71e92.setIcon(icon_e4d0306c7274d2fd3b19a6cd95f2040a);
+        
+    
+        var popup_dd696c1f5cab50291bd9c14d0dde9c5a = L.popup({"maxWidth": "100%"});
+
+        
+            var html_6edc07d5a89f3ee67867bdaa2ab195b2 = $(`<div id="html_6edc07d5a89f3ee67867bdaa2ab195b2" style="width: 100.0%; height: 100.0%;"><b>Масаж м. Арсенальна</b><br>📍 Арсенальна або СмартМедікал на Маккейна<br>💆‍♂️ Остеопатичний масаж (Вітрук)<br>📞 +380936226390</div>`)[0];
+            popup_dd696c1f5cab50291bd9c14d0dde9c5a.setContent(html_6edc07d5a89f3ee67867bdaa2ab195b2);
+        
+
+        marker_69396fef3bb813b3f30fd6edcdb71e92.bindPopup(popup_dd696c1f5cab50291bd9c14d0dde9c5a)
+        ;
+
+        
+    
+    
+            marker_69396fef3bb813b3f30fd6edcdb71e92.bindTooltip(
+                `<div>
+                     Масаж м. Арсенальна
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_09541bd2171ac3bcdf8234f82882aa69 = L.marker(
+                [50.5123, 30.4989],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_a4f10c6ec01f92ce495d7e4400fdf975 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_09541bd2171ac3bcdf8234f82882aa69.setIcon(icon_a4f10c6ec01f92ce495d7e4400fdf975);
+        
+    
+        var popup_a4982634b91847db6c292e125b3bbeab = L.popup({"maxWidth": "100%"});
+
+        
+            var html_c88d605a12967ea8f478749925087938 = $(`<div id="html_c88d605a12967ea8f478749925087938" style="width: 100.0%; height: 100.0%;"><b>ELITE MASSAGE</b><br>📍 ТРЦ DREAM 1 yellow, Оболонський проспект, 1Б, 3 поверх<br>📞 <a href='https://www.instagram.com/alexandr__morgun' target='_blank'>Instagram</a></div>`)[0];
+            popup_a4982634b91847db6c292e125b3bbeab.setContent(html_c88d605a12967ea8f478749925087938);
+        
+
+        marker_09541bd2171ac3bcdf8234f82882aa69.bindPopup(popup_a4982634b91847db6c292e125b3bbeab)
+        ;
+
+        
+    
+    
+            marker_09541bd2171ac3bcdf8234f82882aa69.bindTooltip(
+                `<div>
+                     ELITE MASSAGE
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_17c497f0d8d7b55ee596d76fe3cf13da = L.marker(
+                [50.4144, 30.536],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_d354b1eef7ebdaa70af8bfb7a6df2094 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_17c497f0d8d7b55ee596d76fe3cf13da.setIcon(icon_d354b1eef7ebdaa70af8bfb7a6df2094);
+        
+    
+        var popup_cbbc9f32ee2c6c11be8e9da287dd1eae = L.popup({"maxWidth": "100%"});
+
+        
+            var html_d8b4e06ada5ea530e1c1bec8ce4385d8 = $(`<div id="html_d8b4e06ada5ea530e1c1bec8ce4385d8" style="width: 100.0%; height: 100.0%;"><b>Юрій</b><br>📍 Profesora Pidvysots'koho St, 6В<br>📞 093 134 9757</div>`)[0];
+            popup_cbbc9f32ee2c6c11be8e9da287dd1eae.setContent(html_d8b4e06ada5ea530e1c1bec8ce4385d8);
+        
+
+        marker_17c497f0d8d7b55ee596d76fe3cf13da.bindPopup(popup_cbbc9f32ee2c6c11be8e9da287dd1eae)
+        ;
+
+        
+    
+    
+            marker_17c497f0d8d7b55ee596d76fe3cf13da.bindTooltip(
+                `<div>
+                     Юрій
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_326a01a6b1dbb0e22e2d2d5bdc01fd51 = L.marker(
+                [50.4506, 30.464],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_3757b30fe9462f805c518f8d073ba39a = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_326a01a6b1dbb0e22e2d2d5bdc01fd51.setIcon(icon_3757b30fe9462f805c518f8d073ba39a);
+        
+    
+        var popup_7a8cc7556f8a9b3a30a47d401f17b13c = L.popup({"maxWidth": "100%"});
+
+        
+            var html_ebf14e713c5f85d9ee29d67ad99545a3 = $(`<div id="html_ebf14e713c5f85d9ee29d67ad99545a3" style="width: 100.0%; height: 100.0%;"><b>Владислав Реабілітолог</b><br>📍 КПІ<br>📞 380997584948</div>`)[0];
+            popup_7a8cc7556f8a9b3a30a47d401f17b13c.setContent(html_ebf14e713c5f85d9ee29d67ad99545a3);
+        
+
+        marker_326a01a6b1dbb0e22e2d2d5bdc01fd51.bindPopup(popup_7a8cc7556f8a9b3a30a47d401f17b13c)
+        ;
+
+        
+    
+    
+            marker_326a01a6b1dbb0e22e2d2d5bdc01fd51.bindTooltip(
+                `<div>
+                     Владислав Реабілітолог
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_42574d62a02830a301a536ef422d7922 = L.marker(
+                [50.4448, 30.5106],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_ec3a9dbce166b7b1a60642b8bb2d330a = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_42574d62a02830a301a536ef422d7922.setIcon(icon_ec3a9dbce166b7b1a60642b8bb2d330a);
+        
+    
+        var popup_36c4888de37124fd86c996853619f23e = L.popup({"maxWidth": "100%"});
+
+        
+            var html_d2e8d352871aedd6f1cd6ef02d5115f1 = $(`<div id="html_d2e8d352871aedd6f1cd6ef02d5115f1" style="width: 100.0%; height: 100.0%;"><b>Iryna Lysenko</b><br>📍 бул. Тараса Шевченка 46а<br>📞 <a href='https://www.instagram.com/massageirynalysenko' target='_blank'>Instagram</a></div>`)[0];
+            popup_36c4888de37124fd86c996853619f23e.setContent(html_d2e8d352871aedd6f1cd6ef02d5115f1);
+        
+
+        marker_42574d62a02830a301a536ef422d7922.bindPopup(popup_36c4888de37124fd86c996853619f23e)
+        ;
+
+        
+    
+    
+            marker_42574d62a02830a301a536ef422d7922.bindTooltip(
+                `<div>
+                     Iryna Lysenko
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_0ad61c0473bcd75296921c6460e51d59 = L.marker(
+                [50.4505, 30.5048],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_05f525417f2d704d42c84dd0c0ee1868 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_0ad61c0473bcd75296921c6460e51d59.setIcon(icon_05f525417f2d704d42c84dd0c0ee1868);
+        
+    
+        var popup_1f7ccf8169455ab856663d7c201164cb = L.popup({"maxWidth": "100%"});
+
+        
+            var html_091c3b4914433a8ff711b30bef872101 = $(`<div id="html_091c3b4914433a8ff711b30bef872101" style="width: 100.0%; height: 100.0%;"><b>Остеопатія та Пілатес</b><br>📍 Вул. О.Гончара 26, Київ<br>🕙 10:00 - 21:00<br>📞 <a href='https://w.wlaunch.net/i/tronka.gonchara/b/fd01fdf0-b209-11ee-9635-a72d342f2634/s' target='_blank'>Деталі</a></div>`)[0];
+            popup_1f7ccf8169455ab856663d7c201164cb.setContent(html_091c3b4914433a8ff711b30bef872101);
+        
+
+        marker_0ad61c0473bcd75296921c6460e51d59.bindPopup(popup_1f7ccf8169455ab856663d7c201164cb)
+        ;
+
+        
+    
+    
+            marker_0ad61c0473bcd75296921c6460e51d59.bindTooltip(
+                `<div>
+                     Остеопатія та Пілатес
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_e97be256975b6e9ffc76ee004dcc4189 = L.marker(
+                [50.4376, 30.5204],
+                {}
+            ).addTo(marker_cluster_c17f7e2a638832c1002df17362170818);
+        
+    
+            var icon_6609e601db8b330f4444ad957ad25bff = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_e97be256975b6e9ffc76ee004dcc4189.setIcon(icon_6609e601db8b330f4444ad957ad25bff);
+        
+    
+        var popup_7aa3e562b09079279ca0dedc700bdc66 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_7164c62a30e447147aeee2becafb32b1 = $(`<div id="html_7164c62a30e447147aeee2becafb32b1" style="width: 100.0%; height: 100.0%;"><b>МАСАЖ КИЇВ - Палац спорту</b><br>📍 вулиця Шота Руставелі, 33А<br>📞 073 785 75 75</div>`)[0];
+            popup_7aa3e562b09079279ca0dedc700bdc66.setContent(html_7164c62a30e447147aeee2becafb32b1);
+        
+
+        marker_e97be256975b6e9ffc76ee004dcc4189.bindPopup(popup_7aa3e562b09079279ca0dedc700bdc66)
+        ;
+
+        
+    
+    
+            marker_e97be256975b6e9ffc76ee004dcc4189.bindTooltip(
+                `<div>
+                     МАСАЖ КИЇВ - Палац спорту
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>
