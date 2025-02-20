@@ -408,11 +408,16 @@ body.dark-theme .leaflet-popup-tip {
 
       // Клік на картку → фокус на маркері
       itemDiv.addEventListener("click", function() {
-        var marker = placeMarkers[idx].marker;
-        map.flyTo(marker.getLatLng(), 15);
-        marker.openPopup();
-      });
+      var marker = placeMarkers[idx].marker;
+      map.flyTo(marker.getLatLng(), 15);
+      marker.openPopup();
 
+  // Прокручуємо сторінку до самого верху
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth' // або заберіть, якщо не потрібна плавна анімація
+  });
+});
       container.appendChild(itemDiv);
     });
 
