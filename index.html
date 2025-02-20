@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <title>Massage Map (Google Style, 2/3 + 1/3 layout)</title>
+  <title>Massage Map (Full-width Map + Cards at Bottom + Tooltip Hover)</title>
 
   <!-- Адаптивність -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,52 +46,80 @@
   />
 
   <style>
-    /* Встановлюємо загальний розмір сторінки */
-    html,
-    body {
+    /* Скидання відступів */
+    html, body {
       width: 100%;
       height: 100%;
       margin: 0;
       padding: 0;
     }
 
-    /* Контейнер для мапи (2/3 ширини) */
+    /* Карта зверху (займає весь екран за мінусом блоку для карток) */
     #map {
-      float: left;
-      width: 66.6667%;
-      height: 100vh; /* Займає всю висоту вікна */
+      width: 100%;
+      height: calc(100vh - 264px); /* висота: все вікно - 250px */
     }
 
-    /* Контейнер для списку (1/3 ширини) */
+    /* Контейнер для карток унизу (горизонтальна прокрутка) */
     #contact-list {
-      float: right;
-      width: 33.3333%;
-      height: 100vh;
-      overflow-y: auto; /* Прокрутка, якщо список завеликий */
-      padding: 10px;
-      box-sizing: border-box;
+      width: 100%;
+      height: 264px;
+      overflow-x: auto; /* Горизонтальна прокрутка */
+      white-space: nowrap; /* Щоб картки не переносилися */
       background-color: #f8f8f8;
+      box-sizing: border-box;
+      padding: 10px;
     }
 
-    /* Оформлення кнопок (білий текст) */
+    /* Картки з інформацією про масажистів */
+    .contact-card {
+      display: inline-block;
+      width: 250px;
+      height: 100%;     /* картка по всій висоті контейнера */
+      margin: 0 5px;    /* Зменшили відступи між картками */
+      vertical-align: top;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      white-space: normal; /* Дозволяє переносити текст у кілька рядків */
+    }
+
+    .contact-card h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    /* Стиль кнопок (робимо текст білим) */
     .btn-primary,
     .btn-success {
-      color: #fff !important; /* Примусово білий текст */
+      color: #fff !important;
+    }
+
+    /* Розмір шрифту у попапі */
+    .leaflet-popup-content {
+      font-size: 12px; 
+    }
+
+    /* Анімація тултіпу (збільшення при наведенні) */
+    .leaflet-tooltip {
+      transition: transform 0.2s ease-in-out, font-size 0.2s ease-in-out;
+      font-size: 100%;
+    }
+    .leaflet-tooltip:hover {
+      transform: scale(2);
+      font-size: 200%;
     }
   </style>
 </head>
 <body>
 
-  <!-- Карта зліва (2/3) -->
+  <!-- Карта -->
   <div id="map"></div>
 
-  <!-- Список контактів справа (1/3) -->
-  <div id="contact-list">
-    <h3>Список масажистів</h3>
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-      <!-- Тут динамічно вставимо акордеон для кожного контакту (через JS) -->
-    </div>
-  </div>
+  <!-- Блок карток унизу -->
+  <div id="contact-list"></div>
 
   <!-- JS бібліотеки -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
@@ -110,9 +138,9 @@
         lon: 30.520,
         address: "Палац Україна",
         price: "800-1000 грн за 2-3 години",
-        desc: "Банки, стимуляції, розслабляючий, спортивний, лікуючий.",
+        desc: "Банки, стимуляції, спортивний.",
         contact_type: "phone",
-        contact_value: "0504400094"
+        contact_value: "+380504400094"
       },
       {
         name: "Масаж м. Арсенальна",
@@ -142,7 +170,7 @@
         price: "",
         desc: "",
         contact_type: "phone",
-        contact_value: "0931349757"
+        contact_value: "+380931349757"
       },
       {
         name: "Владислав Реабілітолог",
@@ -152,7 +180,7 @@
         price: "",
         desc: "",
         contact_type: "phone",
-        contact_value: "380997584948"
+        contact_value: "+380997584948"
       },
       {
         name: "Iryna Lysenko",
@@ -182,7 +210,7 @@
         price: "",
         desc: "",
         contact_type: "phone",
-        contact_value: "0737857575"
+        contact_value: "+380737857575"
       },
       {
         name: "PhysioKey",
@@ -196,15 +224,13 @@
       }
     ];
 
-    // Створюємо карту у "Google Maps" стилі (неофіційний варіант!)
-    // Якщо цей шар не працюватиме або порушує TOS, краще використати OSM:
-    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {...})
+    // Створюємо мапу
     var map = L.map('map', {
       center: [50.4501, 30.5234],
       zoom: 12
     });
 
-    // НЕОФІЦІЙНИЙ Google Tiles (можуть не працювати або порушувати TOS!)
+    // НЕОФІЦІЙНИЙ Google Tiles (увага: можуть не працювати або порушувати TOS)
     var googleLayer = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains:['mt0','mt1','mt2','mt3']
@@ -213,7 +239,7 @@
     // Кластер маркерів
     var markerCluster = L.markerClusterGroup();
 
-    // Функція для формування HTML-кнопки
+    // Допоміжна функція для створення кнопок
     function buildContactButton(type, value) {
       if (type === "phone") {
         return "<a href='tel:" + value + "' class='btn btn-primary' target='_blank'>Зателефонувати</a>";
@@ -223,41 +249,32 @@
       return "";
     }
 
-    // Функція для popup (при кліку на маркер)
+    // Формуємо вміст попапа (як у карток)
     function buildPopup(place) {
       var button = buildContactButton(place.contact_type, place.contact_value);
-      var html = "<b>" + place.name + "</b><br>" +
-                 "📍 " + place.address + "<br>" +
-                 (place.price ? place.price + "<br>" : "") +
-                 (place.desc ? place.desc + "<br>" : "") +
-                 button;
-      return html;
-    }
 
-    // Функція для tooltip (при наведенні)
-    function buildTooltip(place) {
-      if (place.contact_type === "phone") {
-        return "<div style='width: 300px; white-space: normal; text-align: center; font-weight: bold;'>" +
-                 place.name + "<br>" + place.contact_value + "<br><br>" +
-                 "<a href='tel:" + place.contact_value + "' class='btn btn-primary' style='color:white' target='_blank'>Зателефонувати</a>" +
-               "</div>";
-      } else if (place.contact_type === "link") {
-        return "<div style='width: 300px; white-space: normal; text-align: center; font-weight: bold;'>" +
-                 place.name + "<br><br>" +
-                 "<a href='" + place.contact_value + "' class='btn btn-success' style='color:white' target='_blank'>Записатися</a>" +
-               "</div>";
-      } else {
-        return "<b>" + place.name + "</b>";
+      var content = "<h4>" + place.name + "</h4>";
+      if (place.address) {
+        content += "<p><strong>Адреса:</strong> " + place.address + "</p>";
       }
+      if (place.price) {
+        content += "<p><strong>Ціна/графік:</strong> " + place.price + "</p>";
+      }
+      if (place.desc) {
+        content += "<p><strong>Опис:</strong> " + place.desc + "</p>";
+      }
+      content += button;
+
+      return content;
     }
 
-    // Додаємо кожен маркер
-    for (var i = 0; i < places.length; i++) {
-      var p = places[i];
-      var popupHtml = buildPopup(p);
-      var tooltipHtml = buildTooltip(p);
+    // Короткий тултіп (лише назва)
+    function buildTooltip(place) {
+      return "<b>" + place.name + "</b>";
+    }
 
-      // Створюємо маркер
+    // Додаємо маркери у кластер
+    places.forEach(function(p) {
       var marker = L.marker([p.lat, p.lon], {
         icon: L.AwesomeMarkers.icon({
           icon: 'info-sign',
@@ -267,76 +284,46 @@
         })
       });
 
-      // Прив'язуємо popup та tooltip
-      marker.bindPopup(popupHtml, {maxWidth: 300});
-      marker.bindTooltip(tooltipHtml);
+      marker.bindPopup(buildPopup(p), { maxWidth: "auto" });
+      marker.bindTooltip(buildTooltip(p));
 
-      // Додаємо в кластер
       markerCluster.addLayer(marker);
-    }
+    });
 
     // Додаємо кластер на мапу
     map.addLayer(markerCluster);
 
-    // ************ Формуємо акордеон у правій колонці ************
-    var accordionContainer = document.getElementById("accordion");
+    // Створюємо картки внизу
+    var contactListContainer = document.getElementById("contact-list");
 
-    places.forEach(function(place, index) {
-      var collapseId = "collapse" + index;
-      var headingId = "heading" + index;
+    places.forEach(function(place) {
+      var cardDiv = document.createElement("div");
+      cardDiv.className = "contact-card";
 
-      // Кнопка акордеону
-      var panel = document.createElement("div");
-      panel.className = "panel panel-default";
+      // Базовий HTML
+      var cardHTML = "<h4>" + place.name + "</h4>";
 
-      var panelHeading = document.createElement("div");
-      panelHeading.className = "panel-heading";
-      panelHeading.setAttribute("role", "tab");
-      panelHeading.id = headingId;
+      if (place.address) {
+        cardHTML += "<p><strong>Адреса:</strong> " + place.address + "</p>";
+      }
+      if (place.price) {
+        cardHTML += "<p><strong>Ціна/Графік:</strong> " + place.price + "</p>";
+      }
+      if (place.desc) {
+        cardHTML += "<p><strong>Опис:</strong> " + place.desc + "</p>";
+      }
 
-      var h4 = document.createElement("h4");
-      h4.className = "panel-title";
+      // Якщо це телефон, показуємо його у тексті (в додаток до кнопки)
+      if (place.contact_type === "phone") {
+        cardHTML += "<p><strong>Телефон:</strong> " + place.contact_value + "</p>";
+      }
 
-      var aTag = document.createElement("a");
-      aTag.setAttribute("role", "button");
-      aTag.setAttribute("data-toggle", "collapse");
-      aTag.setAttribute("data-parent", "#accordion");
-      aTag.setAttribute("href", "#" + collapseId);
-      aTag.setAttribute("aria-expanded", "true");
-      aTag.setAttribute("aria-controls", collapseId);
-      aTag.innerHTML = place.name;
+      // Додаємо кнопку (телефон/лінк)
+      cardHTML += buildContactButton(place.contact_type, place.contact_value);
 
-      h4.appendChild(aTag);
-      panelHeading.appendChild(h4);
-
-      // Вміст акордеону
-      var collapseDiv = document.createElement("div");
-      collapseDiv.id = collapseId;
-      collapseDiv.className = "panel-collapse collapse";
-      collapseDiv.setAttribute("role", "tabpanel");
-      collapseDiv.setAttribute("aria-labelledby", headingId);
-
-      var panelBody = document.createElement("div");
-      panelBody.className = "panel-body";
-
-      // Текст усередині акордеону
-      var contactBtn = buildContactButton(place.contact_type, place.contact_value);
-      var bodyHtml = "<p><b>Адреса:</b> " + place.address + "</p>" +
-                     (place.price ? "<p><b>Ціна/Графік:</b> " + place.price + "</p>" : "") +
-                     (place.desc ? "<p><b>Опис:</b> " + place.desc + "</p>" : "") +
-                     contactBtn;
-
-      panelBody.innerHTML = bodyHtml;
-      collapseDiv.appendChild(panelBody);
-
-      // Складаємо панель
-      panel.appendChild(panelHeading);
-      panel.appendChild(collapseDiv);
-
-      // Додаємо в акордеон
-      accordionContainer.appendChild(panel);
+      cardDiv.innerHTML = cardHTML;
+      contactListContainer.appendChild(cardDiv);
     });
   </script>
-
 </body>
 </html>
