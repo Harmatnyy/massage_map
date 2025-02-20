@@ -2,12 +2,10 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <title>Massage Map (Full-width Map + Cards at Bottom + Tooltip Hover)</title>
-
-  <!-- Адаптивність -->
+  <title>Massage Map with Masonry Layout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Bootstrap CSS -->
+  <!-- Bootstrap CSS (v3) -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
@@ -17,10 +15,10 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css"
   />
 
-  <!-- Font Awesome -->
+  <!-- Font Awesome (для іконок) -->
   <link
     rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
+    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
   />
 
   <!-- Leaflet CSS -->
@@ -29,7 +27,7 @@
     href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
   />
 
-  <!-- MarkerCluster CSS (для групування маркерів) -->
+  <!-- Leaflet MarkerCluster CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -39,78 +37,78 @@
     href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
   />
 
-  <!-- AwesomeMarkers (якщо потрібні іконки) -->
+  <!-- Leaflet AwesomeMarkers CSS -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"
   />
 
   <style>
-    /* Скидання відступів */
+    /* Скидаємо відступи браузера */
     html, body {
-      width: 100%;
-      height: 100%;
       margin: 0;
       padding: 0;
+      width: 100%;
+      height: 100%;
     }
 
-    /* Карта зверху (займає весь екран за мінусом блоку для карток) */
+    /* Карта вгорі – займає 60% висоти вікна */
     #map {
       width: 100%;
-      height: calc(100vh - 264px); /* висота: все вікно - 250px */
+      height: 60vh;
     }
 
-    /* Контейнер для карток унизу (горизонтальна прокрутка) */
-    #contact-list {
-      width: 100%;
-      height: 264px;
-      overflow-x: auto; /* Горизонтальна прокрутка */
-      white-space: nowrap; /* Щоб картки не переносилися */
-      background-color: #f8f8f8;
-      box-sizing: border-box;
-      padding: 10px;
+    /* Контейнер для Masonry-карток внизу */
+    .container {
+      margin-top: 20px;
+    }
+    .grid {
+      margin: 0 auto;
+      max-width: 1140px; /* Приклад, можна зробити 100% */
     }
 
-    /* Картки з інформацією про масажистів */
-    .contact-card {
+    /* Кожна “цеглинка” (картка) Masonry */
+    .grid-item {
+      width: 300px;           /* Фіксована ширина (або використайте grid-sizer) */
+      margin-bottom: 20px;    /* Відступ знизу */
       display: inline-block;
-      width: 250px;
-      height: 100%;     /* картка по всій висоті контейнера */
-      margin: 0 5px;    /* Зменшили відступи між картками */
       vertical-align: top;
-      background: #fff;
+    }
+
+    /* Оформлення панелей Bootstrap */
+    .panel {
       border: 1px solid #ddd;
       border-radius: 4px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      white-space: normal; /* Дозволяє переносити текст у кілька рядків */
+    }
+    .panel-body {
+      padding: 15px;
     }
 
-    .contact-card h4 {
-      margin-top: 0;
-      margin-bottom: 10px;
+    /* Легкий ефект при наведенні на картку */
+    .grid-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      border: 1px solid #008cff;
+      transform: translateY(-2px);
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
+    /* Збільшуємо розмір тексту в абзацах попапу */
+.leaflet-popup-content p {
+  font-size: 13px; /* оберіть бажаний розмір */
+  line-height: 1.2; /* трішки збільшимо міжрядковий інтервал, за потреби */
+}
 
-    /* Стиль кнопок (робимо текст білим) */
-    .btn-primary,
-    .btn-success {
-      color: #fff !important;
-    }
-
-    /* Розмір шрифту у попапі */
-    .leaflet-popup-content {
-      font-size: 12px; 
-    }
-
-    /* Анімація тултіпу (збільшення при наведенні) */
-    .leaflet-tooltip {
-      transition: transform 0.2s ease-in-out, font-size 0.2s ease-in-out;
-      font-size: 100%;
-    }
-    .leaflet-tooltip:hover {
-      transform: scale(2);
-      font-size: 200%;
-    }
+/* Робимо текст у кнопці білим */
+.leaflet-popup-content a.btn {
+  color: #fff !important;  /* важливо перебити базовий колір Bootstrap */
+}    
+/* Заголовок усередині попапу */
+.leaflet-popup-content h4 {
+  font-size: 16px;      /* Розмір шрифту для заголовка */
+  margin: 0 0 10px;     /* Відступи зверху/знизу */
+  color: #333;          /* Колір тексту */
+}
   </style>
 </head>
 <body>
@@ -118,19 +116,26 @@
   <!-- Карта -->
   <div id="map"></div>
 
-  <!-- Блок карток унизу -->
-  <div id="contact-list"></div>
+  <!-- Masonry-контейнер для карток -->
+  <div class="container">
+    <div class="grid" id="cards-container">
+      <!-- Картки буде додавати JS -->
+    </div>
+  </div>
 
-  <!-- JS бібліотеки -->
+  <!-- JS: jQuery, Bootstrap, Leaflet, Masonry -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+  <!-- Підключаємо Masonry -->
+  <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
+  <!-- imagesLoaded (необов’язково, для випадку з зображеннями) -->
+  <!-- <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script> -->
 
   <script>
-    // Дані про масажистів/центри
+    // Прикладові дані з координатами
     var places = [
       {
         name: "Женя массажист",
@@ -138,7 +143,7 @@
         lon: 30.520,
         address: "Палац Україна",
         price: "800-1000 грн за 2-3 години",
-        desc: "Банки, стимуляції, спортивний.",
+        desc: "Банки, стимуляції, розслабляючий, спортивний, лікуючий.",
         contact_type: "phone",
         contact_value: "+380504400094"
       },
@@ -157,7 +162,6 @@
         lat: 50.5123,
         lon: 30.4989,
         address: "ТРЦ DREAM 1 yellow, Оболонський проспект, 1Б, 3 поверх",
-        price: "",
         desc: "",
         contact_type: "link",
         contact_value: "https://www.instagram.com/alexandr__morgun"
@@ -167,7 +171,6 @@
         lat: 50.4144,
         lon: 30.5360,
         address: "Profesora Pidvysots'koho St, 6В",
-        price: "",
         desc: "",
         contact_type: "phone",
         contact_value: "+380931349757"
@@ -177,7 +180,6 @@
         lat: 50.4506,
         lon: 30.4640,
         address: "КПІ",
-        price: "",
         desc: "",
         contact_type: "phone",
         contact_value: "+380997584948"
@@ -187,7 +189,6 @@
         lat: 50.4448,
         lon: 30.5106,
         address: "бул. Тараса Шевченка 46а",
-        price: "",
         desc: "",
         contact_type: "link",
         contact_value: "https://www.instagram.com/massageirynalysenko"
@@ -207,7 +208,6 @@
         lat: 50.4376,
         lon: 30.5204,
         address: "вулиця Шота Руставелі, 33А",
-        price: "",
         desc: "",
         contact_type: "phone",
         contact_value: "+380737857575"
@@ -217,42 +217,50 @@
         lat: 50.4468,
         lon: 30.5070,
         address: "Bohdana Khmel'nyts'koho St, 59, Kyiv, Ukraine 02000",
-        price: "",
         desc: "",
         contact_type: "link",
         contact_value: "https://n818324.alteg.io/company/768564/personal/menu?o="
       }
     ];
 
-    // Створюємо мапу
-    var map = L.map('map', {
-      center: [50.4501, 30.5234],
-      zoom: 12
-    });
+    // Ініціалізація карти
+    var map = L.map('map').setView([50.4501, 30.5234], 12);
 
-    // НЕОФІЦІЙНИЙ Google Tiles (увага: можуть не працювати або порушувати TOS)
+    // (Неофіційний) шар Google Maps
     var googleLayer = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains:['mt0','mt1','mt2','mt3']
     }).addTo(map);
 
-    // Кластер маркерів
+    // MarkerCluster
     var markerCluster = L.markerClusterGroup();
 
-    // Допоміжна функція для створення кнопок
-    function buildContactButton(type, value) {
-      if (type === "phone") {
-        return "<a href='tel:" + value + "' class='btn btn-primary' target='_blank'>Зателефонувати</a>";
-      } else if (type === "link") {
-        return "<a href='" + value + "' class='btn btn-success' target='_blank'>Записатися</a>";
+    // Функція іконки за типом контакту
+    function getIconByType(type) {
+      var iconName, markerColor;
+      switch(type) {
+        case 'phone':
+          iconName = 'fa-phone';
+          markerColor = 'blue';
+          break;
+        case 'link':
+          iconName = 'fa-link';
+          markerColor = 'green';
+          break;
+        default:
+          iconName = 'fa-map-marker';
+          markerColor = 'red';
       }
-      return "";
+      return L.AwesomeMarkers.icon({
+        icon: iconName,
+        prefix: 'fa',
+        markerColor: markerColor,
+        iconColor: 'white'
+      });
     }
 
-    // Формуємо вміст попапа (як у карток)
+    // Побудова попапу
     function buildPopup(place) {
-      var button = buildContactButton(place.contact_type, place.contact_value);
-
       var content = "<h4>" + place.name + "</h4>";
       if (place.address) {
         content += "<p><strong>Адреса:</strong> " + place.address + "</p>";
@@ -263,67 +271,87 @@
       if (place.desc) {
         content += "<p><strong>Опис:</strong> " + place.desc + "</p>";
       }
-      content += button;
-
+      // Кнопка (телефон або лінк)
+      if (place.contact_type === "phone") {
+        content += "<p><a href='tel:" + place.contact_value
+                 + "' class='btn btn-primary' target='_blank'><i class='fa fa-phone'></i> Дзвінок</a></p>";
+      } else if (place.contact_type === "link") {
+        content += "<p><a href='" + place.contact_value
+                 + "' class='btn btn-success' target='_blank'><i class='fa fa-link'></i> Записатися</a></p>";
+      }
       return content;
     }
 
-    // Короткий тултіп (лише назва)
-    function buildTooltip(place) {
-      return "<b>" + place.name + "</b>";
-    }
+    // Зберігатимемо place+marker
+    var placeMarkers = [];
 
-    // Додаємо маркери у кластер
     places.forEach(function(p) {
       var marker = L.marker([p.lat, p.lon], {
-        icon: L.AwesomeMarkers.icon({
-          icon: 'info-sign',
-          markerColor: 'gray',
-          prefix: 'glyphicon',
-          iconColor: 'white'
-        })
-      });
-
-      marker.bindPopup(buildPopup(p), { maxWidth: "auto" });
-      marker.bindTooltip(buildTooltip(p));
+        icon: getIconByType(p.contact_type)
+      }).bindPopup(buildPopup(p), { maxWidth: 280 });
 
       markerCluster.addLayer(marker);
+      placeMarkers.push({ place: p, marker: marker });
     });
 
-    // Додаємо кластер на мапу
     map.addLayer(markerCluster);
 
-    // Створюємо картки внизу
-    var contactListContainer = document.getElementById("contact-list");
+    // -------- Masonry-картки --------
+    var container = document.getElementById("cards-container");
 
-    places.forEach(function(place) {
-      var cardDiv = document.createElement("div");
-      cardDiv.className = "contact-card";
+    places.forEach(function(place, idx) {
+      // Створюємо .grid-item panel
+      var itemDiv = document.createElement("div");
+      itemDiv.className = "grid-item panel panel-default";
 
-      // Базовий HTML
-      var cardHTML = "<h4>" + place.name + "</h4>";
+      var panelBody = document.createElement("div");
+      panelBody.className = "panel-body";
 
+      var html = "<h4>" + place.name + "</h4>";
       if (place.address) {
-        cardHTML += "<p><strong>Адреса:</strong> " + place.address + "</p>";
+        html += "<p><strong>Адреса:</strong> " + place.address + "</p>";
       }
       if (place.price) {
-        cardHTML += "<p><strong>Ціна/Графік:</strong> " + place.price + "</p>";
+        html += "<p><strong>Ціна/графік:</strong> " + place.price + "</p>";
       }
       if (place.desc) {
-        cardHTML += "<p><strong>Опис:</strong> " + place.desc + "</p>";
+        html += "<p><strong>Опис:</strong> " + place.desc + "</p>";
       }
-
-      // Якщо це телефон, показуємо його у тексті (в додаток до кнопки)
       if (place.contact_type === "phone") {
-        cardHTML += "<p><strong>Телефон:</strong> " + place.contact_value + "</p>";
+        html += "<p><strong>Телефон:</strong> " + place.contact_value + "</p>";
+        html += "<p><a href='tel:" + place.contact_value
+              + "' class='btn btn-primary' target='_blank'><i class='fa fa-phone'></i> Дзвінок</a></p>";
+      } else if (place.contact_type === "link") {
+        html += "<p><a href='" + place.contact_value
+              + "' class='btn btn-success' target='_blank'><i class='fa fa-link'></i> Записатися</a></p>";
       }
 
-      // Додаємо кнопку (телефон/лінк)
-      cardHTML += buildContactButton(place.contact_type, place.contact_value);
+      panelBody.innerHTML = html;
+      itemDiv.appendChild(panelBody);
 
-      cardDiv.innerHTML = cardHTML;
-      contactListContainer.appendChild(cardDiv);
+      // Клік на картці => фокус на маркері, попап
+      itemDiv.addEventListener("click", function() {
+        var marker = placeMarkers[idx].marker;
+        map.flyTo(marker.getLatLng(), 15);
+        marker.openPopup();
+      });
+
+      container.appendChild(itemDiv);
     });
+
+    // Ініціалізуємо Masonry
+    var grid = document.querySelector('.grid');
+    var msnry = new Masonry(grid, {
+      itemSelector: '.grid-item',
+      columnWidth: '.grid-item',
+      percentPosition: true,
+      gutter: 15
+    });
+
+    // Якщо є зображення, варто підключити imagesLoaded та викликати:
+    // imagesLoaded(grid, function() {
+    //   msnry.layout();
+    // });
   </script>
 </body>
 </html>
